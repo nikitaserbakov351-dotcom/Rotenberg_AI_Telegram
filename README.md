@@ -85,4 +85,4 @@ pytest -v
 
 ## Автор
 
-Проект подготовлен **[@TheSheinAir](https://github.com/TheSheinAir)** — другие работы смотрите в [профиле GitHub](https://github.com/TheSheinAir?tab=repositories).
+Проект подготовлен **Щербаков Никита Олегович** ([@TheSheinAir](https://github.com/TheSheinAir)) — другие работы смотрите в [профиле GitHub](https://github.com/TheSheinAir?tab=repositories).
