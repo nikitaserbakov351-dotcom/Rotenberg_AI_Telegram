@@ -1,18 +1,25 @@
 import os
+import sys
 import asyncio
 import httpx
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
 
-os.environ["http_proxy"] = "http://proxy.server:3128"
-os.environ["https_proxy"] = "http://proxy.server:3128"
-PROXY_URL = "http://proxy.server:3128"
-
 load_dotenv()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not TELEGRAM_TOKEN or not GEMINI_API_KEY:
+    sys.exit("Ошибка: заполните TELEGRAM_TOKEN и GEMINI_API_KEY в файле .env (см. .env.example)")
+
+# Прокси опционален: задайте PROXY_URL в .env, только если бот запускается
+# из сети, требующей явный исходящий шлюз. Локально переменная не нужна.
+PROXY_URL = os.getenv("PROXY_URL") or None
+if PROXY_URL:
+    os.environ["http_proxy"] = PROXY_URL
+    os.environ["https_proxy"] = PROXY_URL
 
 bot = Bot(token=TELEGRAM_TOKEN, session=AiohttpSession(proxy=PROXY_URL))
 dp = Dispatcher()
