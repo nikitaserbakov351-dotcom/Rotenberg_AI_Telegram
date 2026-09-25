@@ -63,6 +63,14 @@ async def get_weather(city: str):
         return f"Не удалось узнать погоду: {e}"
 
 
+def trim_history(history: list, max_messages: int = 10) -> None:
+    """Скользящее окно памяти: удаляет самые старые пары реплик,
+    пока длина истории не станет не больше max_messages."""
+    while len(history) > max_messages:
+        history.pop(0)
+        history.pop(0)
+
+
 async def get_gemini_response(chat_id, text):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key={GEMINI_API_KEY}"
 
@@ -71,9 +79,7 @@ async def get_gemini_response(chat_id, text):
 
     chat_histories[chat_id].append({"role": "user", "parts": [{"text": text}]})
 
-    while len(chat_histories[chat_id]) > 10:
-        chat_histories[chat_id].pop(0)
-        chat_histories[chat_id].pop(0)
+    trim_history(chat_histories[chat_id])
 
     payload = {
         "system_instruction": {"parts": [{"text": SYSTEM_INSTRUCTION}]},

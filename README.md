@@ -4,6 +4,7 @@
 ![Aiogram](https://img.shields.io/badge/aiogram-3.x-2CA5E0?logo=telegram&logoColor=white)
 ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-API-8E75B2?logo=googlegemini&logoColor=white)
 ![Function Calling](https://img.shields.io/badge/Function%20Calling-weather%20API-4285F4)
+![Tests](https://github.com/nikitaserbakov351-dotcom/Rotenberg_AI_Telegram/actions/workflows/tests.yml/badge.svg)
 
 Асинхронный Telegram-бот на базе большой языковой модели Google Gemini. Проект демонстрирует полный цикл интеграции LLM в практический продукт: управление системным промптом, ведение диалогового контекста, вызов внешних API через механизм Function Calling и безопасную работу с ключами.
 
@@ -14,6 +15,7 @@
 - **Function Calling** — модель самостоятельно принимает решение обратиться к внешнему инструменту `get_weather`; бот выполняет запрос к OpenWeatherMap, парсит JSON-ответ и возвращает данные в LLM для формирования финального ответа (двухшаговый сценарий вызова).
 - **Безопасность конфигурации** — все ключи передаются через переменные окружения (`.env`, в репозитории только шаблон `.env.example`); на старте проверяется наличие обязательных ключей.
 - **Отказоустойчивость** — ошибки сетевых запросов и API обрабатываются и не приводят к падению бота; проксирование трафика включается опционально через конфигурацию.
+- **Тестируемость** — логика выделена в чистые функции и покрыта pytest (скользящее окно контекста, конфигурация прокси, обработка отсутствующих ключей); CI на GitHub Actions.
 
 ## Технологический стек
 
@@ -39,6 +41,13 @@ cp .env.example .env             # заполните ключи доступа
 python main.py
 ```
 
+Для запуска тестов (сетевые вызовы не выполняются):
+
+```bash
+pip install -r requirements-dev.txt
+pytest -v
+```
+
 В `.env` необходимо указать:
 
 | Переменная | Назначение |
@@ -59,9 +68,12 @@ python main.py
 ## Структура проекта
 
 ```
-├── main.py           # логика бота: промпт, работа с API, Function Calling
-├── .env.example      # шаблон конфигурации (сами ключи в репозиторий не попадают)
-└── requirements.txt  # зависимости
+├── main.py                    # логика бота: промпт, работа с API, Function Calling
+├── conftest.py                # фиктивные ключи для тестовой среды
+├── test_bot.py                # pytest: окно контекста, конфигурация, ключи
+├── .env.example               # шаблон конфигурации (сами ключи в репозиторий не попадают)
+├── .github/workflows/tests.yml
+└── requirements.txt           # зависимости (+ requirements-dev.txt для тестов)
 ```
 
 ## Развитие проекта
